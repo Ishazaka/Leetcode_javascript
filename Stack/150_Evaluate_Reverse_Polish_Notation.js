@@ -79,3 +79,41 @@ class Solution {
         return ans;
     }
 }
+
+// 3rd way
+
+
+class Solution {
+    /**
+     * @param {string[]} tokens
+     * @return {number}
+     */
+    evalRPN(tokens) {
+        
+        /**
+         * @return {number}
+         */
+        const dfs = () => {
+            const token = tokens.pop();
+            if (!"+-*/".includes(token)) {
+                return parseInt(token);
+            }
+
+            const right = dfs();
+            const left = dfs();
+
+            if (token === '+') {
+                return left + right;
+            } else if (token === '-') {
+                return left - right;
+            } else if (token === '*') {
+                return left * right;
+            } else {
+                return Math.trunc(left / right);
+            }
+        };
+
+        return dfs();
+    }
+}
+

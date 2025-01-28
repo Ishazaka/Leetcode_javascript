@@ -141,3 +141,141 @@ class MyHashSet {
         return false;
     }
 }
+
+
+// 4th way
+
+
+class TreeNode {
+    /**
+     * @param {number} key
+     */
+    constructor(key) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BST {
+    constructor() {
+        this.root = null;
+    }
+
+    /**
+     * @param {number} key
+     * @return {void}
+     */
+    add(key) {
+        this.root = this._insert(this.root, key);
+    }
+
+    /**
+     * @param {TreeNode} node
+     * @param {number} key
+     * @return {TreeNode}
+     */
+    _insert(node, key) {
+        if (!node) return new TreeNode(key);
+        if (key < node.key) node.left = this._insert(node.left, key);
+        else if (key > node.key) node.right = this._insert(node.right, key);
+        return node;
+    }
+
+    /**
+     * @param {number} key
+     * @return {void}
+     */
+    remove(key) {
+        this.root = this._deleteNode(this.root, key);
+    }
+
+    /**
+     * @param {TreeNode} node
+     * @param {number} key
+     * @return {TreeNode}
+     */
+    _deleteNode(node, key) {
+        if (!node) return null;
+        if (key < node.key) node.left = this._deleteNode(node.left, key);
+        else if (key > node.key) node.right = this._deleteNode(node.right, key);
+        else {
+            if (!node.left) return node.right;
+            if (!node.right) return node.left;
+            let minNode = this._minValueNode(node.right);
+            node.key = minNode.key;
+            node.right = this._deleteNode(node.right, minNode.key);
+        }
+        return node;
+    }
+
+    /**
+     * @param {TreeNode} node
+     * @return {TreeNode}
+     */
+    _minValueNode(node) {
+        while (node.left) node = node.left;
+        return node;
+    }
+
+    /** 
+     * @param {number} key
+     * @return {boolean}
+     */
+    contains(key) {
+        return this._search(this.root, key);
+    }
+
+    /** 
+     * @param {TreeNode} node
+     * @param {number} key
+     * @return {boolean}
+     */
+    _search(node, key) {
+        if (!node) return false;
+        if (key === node.key) return true;
+        if (key < node.key) return this._search(node.left, key);
+        return this._search(node.right, key);
+    }
+}
+
+class MyHashSet {
+    constructor() {
+        this.size = 10000;
+        this.buckets = Array.from({ length: this.size }, () => new BST());
+    }
+
+    _hash(key) {
+        return key % this.size;
+    }
+
+    /** 
+     * @param {number} key
+     * @return {void}
+     */
+    add(key) {
+        const idx = this._hash(key);
+        if (!this.buckets[idx].contains(key)) {
+            this.buckets[idx].add(key);
+        }
+    }
+
+    /** 
+     * @param {number} key
+     * @return {void}
+     */
+    remove(key) {
+        const idx = this._hash(key);
+        this.buckets[idx].remove(key);
+    }
+
+    /** 
+     * @param {number} key
+     * @return {boolean}
+     */
+    contains(key) {
+        const idx = this._hash(key);
+        return this.buckets[idx].contains(key);
+    }
+}
+

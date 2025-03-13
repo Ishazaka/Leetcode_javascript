@@ -122,3 +122,55 @@ class Solution {
         return res;
     }
 }
+
+
+
+
+// 4th way
+
+
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     constructor(val = 0, left = null, right = null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    /**
+     * @param {TreeNode} root
+     * @return {number[]}
+     */
+    postorderTraversal(root) {
+        const res = [];
+        let cur = root;
+
+        while (cur) {
+            if (!cur.right) {
+                res.push(cur.val);
+                cur = cur.left;
+            } else {
+                let prev = cur.right;
+                while (prev.left && prev.left !== cur) {
+                    prev = prev.left;
+                }
+
+                if (!prev.left) {
+                    res.push(cur.val);
+                    prev.left = cur;
+                    cur = cur.right;
+                } else {
+                    prev.left = null;
+                    cur = cur.left;
+                }
+            }
+        }
+
+        res.reverse();
+        return res;
+    }
+}
